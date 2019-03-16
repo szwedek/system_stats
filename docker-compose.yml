@@ -5,6 +5,10 @@ services:
     build: ./postgres
     image: postgres:stats
     restart: always
+    networks:
+      - statsnet
+    volumes:
+      - db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: db
       POSTGRES_PASSWORD: password
@@ -13,8 +17,40 @@ services:
       DB_USER_READ: reader
       DB_PASS_READ: reader
 
+  writer:
+    build: ./python
+    image: python:stats
+    restart: always
+    networks:
+      - statsnet
+    depends_on:
+      - db
+    ports:
+      - 5000:5000
+    volumes:
+      - ./mservices/writer.py:/usr/src/app/app.py
+
+  reader:
+    build: ./python
+    image: python:stats
+    restart: always
+    networks:
+      - statsnet
+    depends_on:
+      - db
+    ports:
+      - 5001:5000
+    volumes:
+      - ./mservices/reader.py:/usr/src/app/app.py
+
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+
+networks:
+  statsnet:
+
+volumes:
+  db-data:  
