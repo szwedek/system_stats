@@ -1,0 +1,20 @@
+version: '3.3'
+
+services:
+  db:
+    build: ./postgres
+    image: postgres:stats
+    restart: always
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_PASSWORD: password
+      DB_USER_WRITE: writer
+      DB_PASS_WRITE: writer
+      DB_USER_READ: reader
+      DB_PASS_READ: reader
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
