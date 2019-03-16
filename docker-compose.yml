@@ -46,6 +46,8 @@ services:
   adminer:
     image: adminer
     restart: always
+    networks:
+      - statsnet
     ports:
       - 8080:8080
 

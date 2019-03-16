@@ -19,10 +19,11 @@ app = Flask(__name__)
 def log():
     data = json.loads(request.data)
     cur = conn.cursor()
-    cur.execute('INSERT INTO events (timestamp, type, payload) VALUES (%s, %s, %s)', (
+    cur.execute('INSERT INTO events (timestamp, type, payload, ip_address) VALUES (%s, %s, %s, %s)', (
       datetime.now(),
       data["type"],
-      data["payload"]
+      data["payload"],
+      request.remote_addr
     ))
     conn.commit()
     return "OK"
