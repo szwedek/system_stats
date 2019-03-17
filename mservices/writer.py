@@ -18,16 +18,11 @@ app = Flask(__name__)
 @app.route('/log', methods=['POST'])
 def log():
     data = json.loads(request.data)
-    if request.headers.getlist("X-Forwarded-For"):
-      ip = request.headers.getlist("X-Forwarded-For")[0]
-    else:
-      ip = request.remote_addr
     cur = conn.cursor()
-    cur.execute('INSERT INTO events (timestamp, type, payload, ip_address) VALUES (%s, %s, %s, %s)', (
+    cur.execute('INSERT INTO events (timestamp, type, payload) VALUES (%s, %s, %s)', (
       datetime.now(),
       data["type"],
-      data["payload"],
-      ip
+      data["payload"]
     ))
     conn.commit()
     return "OK"
