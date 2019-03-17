@@ -16,6 +16,8 @@ services:
       DB_PASS_WRITE: writer
       DB_USER_READ: reader
       DB_PASS_READ: reader
+    labels:
+      - traefik.enable=false
 
   writer:
     build: ./python
@@ -23,12 +25,18 @@ services:
     restart: always
     networks:
       - statsnet
+      - proxy
     depends_on:
       - db
-    ports:
-      - 5000:5000
+    expose:
+      - 5000
     volumes:
       - ./mservices/writer.py:/usr/src/app/app.py
+    labels:
+      - traefik.backend=writer
+      - traefik.docker.network=proxy
+      - traefik.frontend.rule=Path:/log
+      - traefik.port=5000
 
   reader:
     build: ./python
@@ -36,12 +44,33 @@ services:
     restart: always
     networks:
       - statsnet
+      - proxy
     depends_on:
       - db
-    ports:
-      - 5001:5000
+    expose:
+      - 5000
     volumes:
       - ./mservices/reader.py:/usr/src/app/app.py
+    labels:
+      - traefik.backend=reader
+      - traefik.docker.network=proxy
+      - traefik.frontend.rule=Path:/stats
+      - traefik.port=5000
+
+  traefik:
+    image: traefik:alpine
+    restart: always
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./mservices/traefik.toml:/traefik.toml
+    ports:
+      - 80:80
+      - 81:8080
+    labels:
+      - traefik.port=8080
+      - traefik.frontend.rule=Host:docker.localhost
 
   adminer:
     image: adminer
@@ -53,6 +82,7 @@ services:
 
 networks:
   statsnet:
+  proxy:
 
 volumes:
   db-data:  

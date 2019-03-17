@@ -1,0 +1,15 @@
+debug = true
+
+logLevel = "ERROR"
+
+defaultEntryPoints = ["http"]
+
+[docker]
+  endpoint = "unix:///var/run/docker.sock"
+  watch = true
+  swarmMode = false
+  network = "proxy"
+
+[web]
+  address = ":8080"
+
