@@ -25,11 +25,8 @@ pipeline {
                 sh 'ADD_COL=$(cat updates/add_ip_field.sql | docker exec -i system_stats_db_1 /bin/bash -c "export PGPASSWORD=${POSTGRES_PASSWORD} && psql -U ${POSTGRES_USER} ${POSTGRES_DB}"); if [ "$ADD_COL" == "ALTER TABLE" ]; then echo "ADD COL SUCCESS"; exit 0; else echo "ADD COL FAILED"; exit 1; fi'
                 sh 'cp updates/writer.py mservices/writer.py'
                 sh 'docker-compose up -d --scale writer=2 --no-recreate'
-                sh 'sleep 5'
-                sh 'docker stop system_stats_writer_1'
-                sh 'sleep 5'
+                sh 'docker restart system_stats_writer_1'
                 sh 'docker-compose up -d --scale writer=1 --no-recreate'
-                sh 'sleep 5'
             }
         }
         

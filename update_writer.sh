@@ -20,11 +20,8 @@ if [ ! -e $DIR_up/writer.py.bak ]; then
   cp $DIR_up/writer.py $DIR_serv/writer.py
 
   docker-compose up -d --scale writer=2 --no-recreate
-  sleep 5
-  docker stop ${CURR_DIR}_writer_1
-  sleep 5
+  docker restart ${CURR_DIR}_writer_1
   docker-compose up -d --scale writer=1 --no-recreate
-  sleep 5
 fi
 
 RESP_TEST=$(curl -m 5 -s --header "Content-Type: application/json" --request POST --data '{"type":"test","payload":"test"}'   http://localhost/log)
