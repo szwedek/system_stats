@@ -34,8 +34,8 @@ services:
       - ./mservices/writer.py:/usr/src/app/app.py
     labels:
       - traefik.backend=writer
-      - traefik.baclemd.healtcheck.path="/health"
-      - traefik.baclemd.healtcheck.interval=1s
+      - traefik.backend.healtcheck.path="/health"
+      - traefik.backend.healtcheck.interval=1s
       - traefik.docker.network=${COMPOSE_PROJECT_NAME}_proxy
       - traefik.frontend.rule=Path:/log
       - traefik.port=5000
