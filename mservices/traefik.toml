@@ -1,6 +1,4 @@
-debug = true
-
-logLevel = "DEBUG"
+logLevel = "ERROR"
 
 defaultEntryPoints = ["http"]
 
@@ -13,3 +11,5 @@ defaultEntryPoints = ["http"]
 [web]
   address = ":8080"
 
+[retry]
+  attempts = 2
