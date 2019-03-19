@@ -64,6 +64,9 @@ services:
     restart: always
     networks:
       - proxy
+    depends_on:
+        - writer
+        - reader
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./mservices/traefik.toml:/traefik.toml
